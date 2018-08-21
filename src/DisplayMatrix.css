@@ -1,0 +1,13 @@
+.pixel {
+    margin: 4px;
+    border: none;
+    color: white;
+    padding: 1px 1px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+br {
+    display: block;
+    margin: -4px 0;
+}
