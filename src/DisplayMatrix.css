@@ -1,5 +1,5 @@
 .pixel {
-    margin: 4px;
+    margin: 2px;
     border: none;
     color: white;
     padding: 1px 1px;
@@ -9,5 +9,5 @@
 }
 br {
     display: block;
-    margin: -4px 0;
+    margin: -6px 0;
 }

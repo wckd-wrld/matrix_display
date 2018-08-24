@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import logo from './logo.png';
 import './App.css';
 import DisplayMatrix from './DisplayMatrix'
 
@@ -8,13 +8,12 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Welcome to React</h1>
         </header>
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
-        <DisplayMatrix width={80} height={30} />
+        <DisplayMatrix source={logo} width={100} height={100} />
       </div>
     );
   }
