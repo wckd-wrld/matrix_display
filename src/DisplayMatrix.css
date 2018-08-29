@@ -1,11 +1,17 @@
+body {
+    margin-top: 20%;
+}
+
 .pixel {
-    margin: 2px;
+    margin: 1px;
+    margin-bottom: 9px;
     border: none;
     color: white;
-    padding: 1px 1px;
+    padding: 3px 3px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
+    transition: ease-in 2s;
 }
 br {
     display: block;
