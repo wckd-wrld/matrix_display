@@ -6,15 +6,28 @@ import DisplayMatrix from './DisplayMatrix'
 
 class App extends Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            image: logo,
+        };
+    }
+
     handleClick() {
-        this.setState({ image : car });
-        console.log(this);
+        this.setState({ image : this.state.image == car ? logo : car });
     }
 
     render() {
+    
+
+
     return (
       <div className="App">
-        <DisplayMatrix source={logo} width={100} height={20} />
+          <DisplayMatrix source={this.state.image} width={100} height={20} />
+          <button onClick={this.handleClick.bind(this)}>
+              test
+          </button>
       </div>
     );
     }

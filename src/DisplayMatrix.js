@@ -13,9 +13,7 @@ class DisplayMatrix extends Component {
         
         this.loadContent(props.source);
         // TODO: CHECK HOW TO INTEGRATE DIFFERENT TYPES OF INPUTS THROUGH THE PROPS
-        // TODO: Need to find a tidy place to store the image, do I load it every time it changes,
-        // if so it wouldn't need tos stay in state it could just be loaded with ever call to
-        // loadFramePixels();
+        // TODO: Need to find how to change css of DOM elements without having to re-render them
     }
 
 
@@ -36,7 +34,13 @@ class DisplayMatrix extends Component {
         frame.src = content_URL;
         frame.parent = this;
         frame.onload = (function() {
-            this.parent.loadFramePixels(this);
+            if (this.src == null) {
+                this.parent.loadFramePixels(null);
+            }
+            else {
+                console.log("here");
+                this.parent.loadFramePixels(this);
+            }
         })
         
         frame = null; // Garbage Collection
@@ -44,6 +48,14 @@ class DisplayMatrix extends Component {
     }
 
     loadFramePixels(frame) {
+        var newPixelData = [];
+
+        if (frame == null) {
+            newPixelData.fill({red: 0, green: 0, blue: 0, alpha: 0});
+            this.setState({ pixelData : newPixelData});
+            return;
+        }
+
         var canvas = document.createElement("canvas");
         canvas.height = this.state.height;
         canvas.width = this.state.width;
@@ -55,7 +67,7 @@ class DisplayMatrix extends Component {
         console.log(RGBAMatrix.data);
 
         var index = 0;  // Can't use normal array functions because this is a Uint8ClampedArray
-        var newPixelData = this.state.pixelData.map(_ => {
+        newPixelData = this.state.pixelData.map(_ => {
             return ({
                 red   : RGBAMatrix.data[index++],
                 green : RGBAMatrix.data[index++],
@@ -83,5 +95,7 @@ function Pixel(r, g, b, a) {
         </div>
         );
 }
-
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 export default DisplayMatrix;
