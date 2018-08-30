@@ -3,72 +3,99 @@ import './DisplayMatrix.css';
 
 class DisplayMatrix extends Component {
     constructor(props) {
+
         super(props);
         this.state = {
-            pixels: [],
+            pixelData: new Array(props.width*props.height).fill(null),
             width: props.width,
             height: props.height,
-            frame: new Image(200,100),
         };
         
-        this.state.frame.src = props.source;
-        this.state.frame.onload = (function() {
-            this.loadFramePixels();
-        }).bind(this);
+        this.loadContent(props.source);
         // TODO: CHECK HOW TO INTEGRATE DIFFERENT TYPES OF INPUTS THROUGH THE PROPS
+        // TODO: Need to find how to change css of DOM elements without having to re-render them
     }
 
 
     render() {
-        var displayMatrix = [];
-        for (var index = 0; index < this.state.pixels.length; index++) {
-            if (index % this.state.width === 0) {
-                displayMatrix.push(<br />);
-            }
-            displayMatrix.push(Pixel(this.state.pixels[index]));
-        }
-        return (displayMatrix);
+        return (this.state.pixelData.map(_ => {
+            return(
+                _ == null ? null : Pixel(_.red, _.blue, _.green, _.alpha)
+            );
+        }));
+    }
+    
+    componentWillReceiveProps(nextProps) {
+        this.loadContent(nextProps.source);
     }
 
+    loadContent(content_URL) {
+        var frame = new Image();
+        frame.src = content_URL;
+        frame.parent = this;
+        frame.onload = (function() {
+            if (this.src == null) {
+                this.parent.loadFramePixels(null);
+            }
+            else {
+                console.log("here");
+                this.parent.loadFramePixels(this);
+            }
+        })
+        
+        frame = null; // Garbage Collection
 
-    loadFramePixels() {
+    }
+
+    loadFramePixels(frame) {
+        var newPixelData = [];
+
+        if (frame == null) {
+            newPixelData.fill({red: 0, green: 0, blue: 0, alpha: 0});
+            this.setState({ pixelData : newPixelData});
+            return;
+        }
+
         var canvas = document.createElement("canvas");
         canvas.height = this.state.height;
         canvas.width = this.state.width;
         var context = canvas.getContext('2d');
-        context.drawImage(this.state.frame, 0, 0, this.state.width, this.state.height);
-
+        console.log(frame);
+        context.drawImage(frame, 0, 0, this.state.width, this.state.height);
         let RGBAMatrix = context.getImageData(0, 0, this.state.width, this.state.height);
-        var newPixels = []
 
-        for (var index = 0; index < (this.state.width*this.state.height); index++){
-            var localIndex = (index*4);
-            newPixels.push([
-                RGBAMatrix.data[localIndex],      // Red
-                RGBAMatrix.data[localIndex+1],    // Green
-                RGBAMatrix.data[localIndex+2],    // Blue
-                RGBAMatrix.data[localIndex+3]     // Alpha
-            ]);
-        }
+        console.log(RGBAMatrix.data);
 
-        this.setState({ pixels : newPixels });
+        var index = 0;  // Can't use normal array functions because this is a Uint8ClampedArray
+        newPixelData = this.state.pixelData.map(_ => {
+            return ({
+                red   : RGBAMatrix.data[index++],
+                green : RGBAMatrix.data[index++],
+                blue  : RGBAMatrix.data[index++],
+                alpha : RGBAMatrix.data[index++]
+            });
+        });
+        console.log(newPixelData);
+        this.setState({ pixelData : newPixelData.slice()});
+
 
     }
     
 }    
 
-function Pixel(rgba) {
+function Pixel(r, g, b, a) {
     return (
-        <button className="pixel" style={{backgroundColor: ('rgba(' +
-                                                            rgba[0] + ', ' +
-                                                            rgba[1] + ', ' +
-                                                            rgba[2] + ', ' +
-                                                            rgba[3] + ')'
+        <div className="pixel" style={{backgroundColor: ('rgba(' +
+                                                            r + ', ' +
+                                                            g + ', ' +
+                                                            b + ', ' +
+                                                            a + ')'
                                                             )
-                                        }}
-        >
-        </button>
+                                        }}>
+        </div>
         );
 }
-
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 export default DisplayMatrix;
