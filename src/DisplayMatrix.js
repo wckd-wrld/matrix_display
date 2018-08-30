@@ -13,14 +13,15 @@ class DisplayMatrix extends Component {
         
         this.loadContent(props.source);
         // TODO: CHECK HOW TO INTEGRATE DIFFERENT TYPES OF INPUTS THROUGH THE PROPS
-        // TODO: Need to find how to change css of DOM elements without having to re-render them
     }
 
 
     render() {
-        return (this.state.pixelData.map(_ => {
+        return (this.state.pixelData.map((_, index) => {
             return(
-                _ == null ? null : Pixel(_.red, _.blue, _.green, _.alpha)
+                _ == null 
+                ? Pixel(0, 0, 0, 0, (index % this.state.width == 0)) 
+                : Pixel(_.red, _.green, _.blue, _.alpha, (index % this.state.width == 0))
             );
         }));
     }
@@ -83,8 +84,9 @@ class DisplayMatrix extends Component {
     
 }    
 
-function Pixel(r, g, b, a) {
+function Pixel(r, g, b, a, endOfLine) {
     return (
+        <span>
         <div className="pixel" style={{backgroundColor: ('rgba(' +
                                                             r + ', ' +
                                                             g + ', ' +
@@ -92,7 +94,9 @@ function Pixel(r, g, b, a) {
                                                             a + ')'
                                                             )
                                         }}>
-        </div>
+                                    </div> 
+                                    {endOfLine ? (<br/>) : ('')}
+                                </span>
         );
 }
 function sleep(ms) {

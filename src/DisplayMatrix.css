@@ -1,5 +1,13 @@
 body {
     margin: 0%;
+    display: flex;
+
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -moz-flex;
+  display: -webkit-flex;
+  display: flex;
 }
 
 .pixel {
@@ -11,8 +19,13 @@ body {
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    transition: ease-in 2s;
+    transition: ease-in 0.5s;
 }
+
+.pixel:hover {
+    opacity: 0;
+}
+
 br {
     display: block;
     margin: -6px 0;

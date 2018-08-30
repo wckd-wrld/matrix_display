@@ -15,7 +15,7 @@ class App extends Component {
     }
 
     handleClick() {
-        this.setState({ image : this.state.image == car ? logo : car });
+        this.setState({ image : this.state.image == '' ? logo : '' });
     }
 
     render() {
@@ -24,7 +24,7 @@ class App extends Component {
 
     return (
       <div className="App">
-          <DisplayMatrix source={this.state.image} width={100} height={20} />
+          <DisplayMatrix source={this.state.image} width={200} height={100} />
           <button onClick={this.handleClick.bind(this)}>
               test
           </button>
