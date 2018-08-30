@@ -3,34 +3,103 @@ import './DisplayMatrix.css';
 
 class DisplayMatrix extends Component {
     constructor(props) {
+
         super(props);
         this.state = {
-            pixels: Array(props.width*props.height),
+            pixelData: new Array(props.width*props.height).fill(null),
             width: props.width,
             height: props.height,
         };
+        
+        this.loadContent(props.source);
+        // TODO: CHECK HOW TO INTEGRATE DIFFERENT TYPES OF INPUTS THROUGH THE PROPS
     }
+
+
     render() {
-        var displayMatrix = [];
-        for (var index = 0; index < this.state.height; index++) {
-            for (var index2 = 0; index2 < this.state.width; index2++) {
-                displayMatrix.push(Pixel());
+        return (this.state.pixelData.map((_, index) => {
+            return(
+                _ == null 
+                ? Pixel(0, 0, 0, 0, (index % this.state.width == 0)) 
+                : Pixel(_.red, _.green, _.blue, _.alpha, (index % this.state.width == 0))
+            );
+        }));
+    }
+    
+    componentWillReceiveProps(nextProps) {
+        this.loadContent(nextProps.source);
+    }
+
+    loadContent(content_URL) {
+        var frame = new Image();
+        frame.src = content_URL;
+        frame.parent = this;
+        frame.onload = (function() {
+            if (this.src == null) {
+                this.parent.loadFramePixels(null);
             }
-            displayMatrix.push(<br />);
+            else {
+                console.log("here");
+                this.parent.loadFramePixels(this);
+            }
+        })
+        
+        frame = null; // Garbage Collection
+
+    }
+
+    loadFramePixels(frame) {
+        var newPixelData = [];
+
+        if (frame == null) {
+            newPixelData.fill({red: 0, green: 0, blue: 0, alpha: 0});
+            this.setState({ pixelData : newPixelData});
+            return;
         }
 
-        return (displayMatrix);
-    }
+        var canvas = document.createElement("canvas");
+        canvas.height = this.state.height;
+        canvas.width = this.state.width;
+        var context = canvas.getContext('2d');
+        console.log(frame);
+        context.drawImage(frame, 0, 0, this.state.width, this.state.height);
+        let RGBAMatrix = context.getImageData(0, 0, this.state.width, this.state.height);
 
-    updatePixels() {
-    }
-}
+        console.log(RGBAMatrix.data);
 
-function Pixel(props) {
+        var index = 0;  // Can't use normal array functions because this is a Uint8ClampedArray
+        newPixelData = this.state.pixelData.map(_ => {
+            return ({
+                red   : RGBAMatrix.data[index++],
+                green : RGBAMatrix.data[index++],
+                blue  : RGBAMatrix.data[index++],
+                alpha : RGBAMatrix.data[index++]
+            });
+        });
+        console.log(newPixelData);
+        this.setState({ pixelData : newPixelData.slice()});
+
+
+    }
+    
+}    
+
+function Pixel(r, g, b, a, endOfLine) {
     return (
-        <button className="pixel" style={{backgroundColor: "#4CAF50",}}>
-        </button>
+        <span>
+        <div className="pixel" style={{backgroundColor: ('rgba(' +
+                                                            r + ', ' +
+                                                            g + ', ' +
+                                                            b + ', ' +
+                                                            a + ')'
+                                                            )
+                                        }}>
+                                    </div> 
+                                    {endOfLine ? (<br/>) : ('')}
+                                </span>
         );
 }
-
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 export default DisplayMatrix;
