@@ -1,13 +1,32 @@
+body {
+    margin: 0%;
+    display: flex;
+
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -moz-flex;
+  display: -webkit-flex;
+  display: flex;
+}
+
 .pixel {
-    margin: 4px;
+    margin: 1px;
+    margin-bottom: 9px;
     border: none;
     color: white;
-    padding: 1px 1px;
+    padding: 3px 3px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
+    transition: ease-in 0.5s;
 }
+
+.pixel:hover {
+    opacity: 0;
+}
+
 br {
     display: block;
-    margin: -4px 0;
+    margin: -6px 0;
 }

@@ -1,23 +1,37 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import car from './img/car.png';
+import logo from './img/logo.jpeg';
 import './App.css';
 import DisplayMatrix from './DisplayMatrix'
 
 class App extends Component {
-  render() {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            image: logo,
+        };
+    }
+
+    handleClick() {
+        this.setState({ image : this.state.image == '' ? logo : '' });
+    }
+
+    render() {
+    
+
+
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-        <DisplayMatrix width={80} height={30} />
+          <DisplayMatrix source={this.state.image} width={200} height={100} />
+          <button onClick={this.handleClick.bind(this)}>
+              test
+          </button>
       </div>
     );
-  }
-}
+    }
+
+    }
 
 export default App;
